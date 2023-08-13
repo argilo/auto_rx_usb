@@ -1,0 +1,46 @@
+#cloud-config
+autoinstall:
+  version: 1
+  update: yes
+  storage:
+    layout:
+      name: direct
+  identity:
+    hostname: autorx
+    password: "$6$CRJ/PaS.enovvR5m$8Dvyn2zz.wNj5NlJw0kdm/1c8AStNPthCs4WHZfwGyax/FDSRwQvbfN//UmrCBWU4auZIiO0.rDT6Bb96upJ60" # autorx
+    username: autorx
+  packages:
+    - xubuntu-core
+    - python3
+    - python3-numpy
+    - python3-setuptools
+    - python3-crcmod
+    - python3-requests
+    - python3-dateutil
+    - python3-pip
+    - sox
+    - git
+    - build-essential
+    - libtool
+    - cmake
+    - usbutils
+    - libusb-1.0-0-dev
+    - rng-tools
+    - libsamplerate-dev
+    - libatlas3-base
+    - libgfortran5
+    - rtl-sdr
+  late-commands:
+    - wget -O /etc/udev/rules.d/20-rtlsdr.rules https://raw.githubusercontent.com/osmocom/rtl-sdr/master/rtl-sdr.rules
+    - curtin in-target --target=/target -- apt-get -y purge gdm3
+    - echo [SeatDefaults] >> /target/etc/lightdm/lightdm.conf.d/login.conf
+    - echo user-session=xubuntu >> /target/etc/lightdm/lightdm.conf.d/login.conf
+    - echo autologin-user=autorx >> /target/etc/lightdm/lightdm.conf.d/login.conf
+    - git clone https://github.com/argilo/auto_rx_usb.git /target/opt/auto_rx_usb
+    - mkdir -p /target/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
+    - cp /target/opt/auto_rx_usb/xfce4-screensaver.xml /target/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/
+    - cp /target/opt/auto_rx_usb/rtlsdr-blacklist.conf /target/etc/modprobe.d/
+    - git clone https://github.com/projecthorus/radiosonde_auto_rx.git /target/opt/radiosonde_auto_rx
+    - curtin in-target --target=/target -- sh -c 'cd /opt/radiosonde_auto_rx/auto_rx && ./build.sh'
+    - curtin in-target --target=/target -- sh -c 'cd /opt/radiosonde_auto_rx/auto_rx && pip3 install -r requirements.txt'
+    - cp /target/opt/auto_rx_usb/station.cfg /target/opt/radiosonde_auto_rx/auto_rx/
