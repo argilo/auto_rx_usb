@@ -31,7 +31,6 @@ autoinstall:
     - libgfortran5
     - rtl-sdr
   late-commands:
-    - wget -O /etc/udev/rules.d/20-rtlsdr.rules https://raw.githubusercontent.com/osmocom/rtl-sdr/master/rtl-sdr.rules
     - curtin in-target --target=/target -- apt-get -y purge gdm3
     - echo [SeatDefaults] >> /target/etc/lightdm/lightdm.conf.d/login.conf
     - echo user-session=xubuntu >> /target/etc/lightdm/lightdm.conf.d/login.conf
@@ -40,6 +39,7 @@ autoinstall:
     - mkdir -p /target/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
     - cp /target/opt/auto_rx_usb/xfce4-screensaver.xml /target/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/
     - cp /target/opt/auto_rx_usb/rtlsdr-blacklist.conf /target/etc/modprobe.d/
+    - wget -O /target/etc/udev/rules.d/20-rtlsdr.rules https://raw.githubusercontent.com/osmocom/rtl-sdr/master/rtl-sdr.rules
     - git clone https://github.com/projecthorus/radiosonde_auto_rx.git /target/opt/radiosonde_auto_rx
     - curtin in-target --target=/target -- sh -c 'cd /opt/radiosonde_auto_rx/auto_rx && ./build.sh'
     - curtin in-target --target=/target -- sh -c 'cd /opt/radiosonde_auto_rx/auto_rx && pip3 install -r requirements.txt'
