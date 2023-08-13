@@ -48,5 +48,6 @@ autoinstall:
     - curtin in-target --target=/target -- sh -c 'cd /opt/radiosonde_auto_rx/auto_rx && pip3 install -r requirements.txt'
     - cp /target/opt/auto_rx_usb/station.cfg /target/opt/radiosonde_auto_rx/auto_rx/
     - cp /target/opt/auto_rx_usb/auto_rx.service /target/etc/systemd/system/
+    - chmod 777 /target/opt/radiosonde_auto_rx/auto_rx/
     - chmod 777 /target/opt/radiosonde_auto_rx/auto_rx/log/
     - curtin in-target --target=/target -- systemctl enable auto_rx.service
