@@ -11,7 +11,6 @@ autoinstall:
     username: autorx
   packages:
     - xubuntu-core
-    - firefox
     - python3
     - python3-numpy
     - python3-setuptools
